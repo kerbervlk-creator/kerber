@@ -1,0 +1,86 @@
+import kagglehub
+
+# Download
+path = kagglehub.dataset_download("suhanigupta04/employee-mental-health-and-burnout-dataset")
+
+print("Path to dataset files:", path)
+
+import pandas as pd
+import os
+
+file_name = "tech_mental_health_burnout.csv"
+full_file_path = os.path.join(path, file_name)
+
+df_mental = pd.read_csv(full_file_path)
+df_mental.head()
+
+df_mental.info()
+
+map_mental = {
+    'age': 'idade'
+    , 'gender': 'sexo'
+    , 'job_role': 'cargo'
+    , 'experience_years': 'anos_de_experiencia'
+    , 'company_size': 'tamanho_da_empresa'
+    , 'work_mode': 'modo_de_trabalho'
+    , 'work_hours_per_week': 'horas_de_trabalho_por_semana'
+    , 'overtime_hours': 'horas_extras'
+    , 'meetings_per_day': 'reunioes_por_dia'
+    , 'deadlines_missed': 'prazo_nao_cumprido'
+    , 'job_satisfaction': 'satisfacao_do_cargo'
+    , 'manager_support': 'suporte_do_gerente'
+    , 'work_life_balance': 'balance_de_vida_trabalho'
+    , 'sleep_hours': 'horas_de_sono'
+    , 'physical_activity_days': 'dias_de_atividade_fisica'
+    , 'screen_time_hours': 'horas_de_tempo_de_tela'
+    , 'caffeine_intake': 'intake_de_cafeina'
+    , 'social_support_score': 'pontuacao_de_suporte_social'
+    , 'has_therapy': 'tem_terapia'
+    , 'stress_level': 'nivel_de_estresse'
+    , 'anxiety_score': 'pontuacao_de_ansiedade'
+    , 'depression_score': 'pontuacao_de_depressao'
+    , 'burnout_score': 'pontuacao_de_burnout'
+    , 'burnout_level': 'nivel_de_burnout'
+    , 'seeks_professional_help': 'precisa_de_ajuda_profissional'
+}
+
+df_mental.rename(columns=map_mental, inplace=True)
+df_mental.head()
+
+df_mental['sexo'] = df_mental['sexo'].replace({'Female': 'Feminino', 'Male': 'Masculino', 'Non-binary': 'nao_binario'})
+
+
+df_mental.head()
+
+df_mental['modo_de_trabalho'] = df_mental['modo_de_trabalho'].replace({'Hybrid': 'híbrido', 'Remote': 'remoto', 'OnSite': 'presencial'})
+
+
+df_mental.head()
+
+df_mental['nivel_de_burnout'] = df_mental['nivel_de_burnout'].replace({'Low': 'baixo', 'Moderate': 'moderado', 'High': 'alto'})
+
+
+df_mental.head()
+
+df_mental.info()
+
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+sexo_percentages = df_mental['sexo'].value_counts(normalize=True) * 100
+
+
+plt.figure(figsize=(8, 6))
+sns.barplot(x=sexo_percentages.index, y=sexo_percentages.values, hue=sexo_percentages.index, palette='viridis', legend=False)
+plt.title('Distribuição Percentual por Sexo')
+plt.xlabel('Sexo')
+plt.ylabel('Porcentagem (%)')
+plt.ylim(0, 100)
+
+for index, value in enumerate(sexo_percentages.values):
+    plt.text(index, value + 1, f'{value:.2f}%', ha='center')
+
+plt.tight_layout()
+plt.show()
